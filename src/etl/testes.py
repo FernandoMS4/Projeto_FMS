@@ -27,11 +27,10 @@ def verificar_database():
         result = cursor.fetchone()
         
         if not result:
-            # Criar o banco de dados
-            cursor.execute(f"CREATE DATABASE {DB_NAME}")
-            print(f"Banco de dados '{DB_NAME}' criado com sucesso.")
+            cursor.execute(f"create database {DB_NAME}")
+            print(f"DB '{DB_NAME}' criado com sucesso.")
         else:
-            print(f"Banco de dados '{DB_NAME}' já existe.")
+            pass
         
         cursor.close()
         connection.close()

@@ -1,5 +1,5 @@
 import scrapy
-
+from datetime import datetime
 
 class AmazonSpider(scrapy.Spider):
     name = "amazon"
@@ -16,7 +16,8 @@ class AmazonSpider(scrapy.Spider):
                'reviews_qtd' :  product.css('.a-size-base.s-underline-text::text').get(),
                'product_price_local' : product.css('.a-link-normal.s-underline-text.s-underline-link-text.s-link-style.a-text-normal .a-price .a-price-symbol::text').get(),
                'product_price' : product.css('.a-link-normal.s-underline-text.s-underline-link-text.s-link-style.a-text-normal .a-price .a-price-whole::text').get(),
-               'product_price_fraction' : product.css('.a-link-normal.s-underline-text.s-underline-link-text.s-link-style.a-text-normal .a-price .a-price-fraction::text').get()
+               'product_price_fraction' : product.css('.a-link-normal.s-underline-text.s-underline-link-text.s-link-style.a-text-normal .a-price .a-price-fraction::text').get(),
+               'modified_date' : datetime.now().strftime("%y/%m/%d %H:%M:%S")
                }
         if self.first_page < self.end_page:   
             next_page = response.css('li.s-list-item-margin-right-adjustment a::attr("href")').get()

@@ -1,5 +1,4 @@
 import pandas as pd
-from datetime import datetime
 
 def format_scrapy():
     try:
@@ -12,10 +11,12 @@ def format_scrapy():
     df['product_price'] = df['product_price'].fillna('0').astype('int')
     df['product_price'] = df['product_price'].astype('str') + '.' + df['product_price_fraction'].fillna('0').astype('int').astype('str')
     df['product_price'] = df['product_price'].astype('float')
-    df['insert_date'] = datetime.now().strftime("%y/%m/%d %H:%M:%S")
+    df['marketplace'] = 'amazon'
     df = df.drop(columns='product_price_fraction')
+    df = df.drop_duplicates()
+    df.to_csv('data/dados_tratados.csv',header=True,index=False)
     return df
 
 if __name__ == '__main__':
     df = format_scrapy()
-    df.to_csv('../../data/dados_tratados.csv',header=True,index=False)
+    df.to_csv('data/dados_tratados.csv',header=True,index=False)

@@ -1,8 +1,9 @@
-from sqlmodel import  Field,SQLModel,Session,create_engine
-from typing import Optional
+from sqlmodel import  Field,SQLModel,Session,create_engine,select
+from sqlalchemy.dialects.mysql import insert
 import mysql.connector
 import os
 from dotenv import load_dotenv, find_dotenv
+from datetime import datetime
 
 load_dotenv(find_dotenv())
 
@@ -40,33 +41,56 @@ def verificar_database():
         print(f"Erro ao verificar/criar o banco de dados: {err}")
 
 class Products(SQLModel,table=True):
-    id : Optional[int] = Field(default=None,primary_key=True)
-    product_name : str
+    product_name : str = Field(default=None,primary_key=True)
     reviews : float
     reviews_qtd : int
     product_price_local : str
-    product_price : float
-    insert_date : str
+    product_price : float = Field(default=None,primary_key=True)
+    created_date : str = Field(default=datetime.now().strftime("%y/%m/%d %H:%M:%S"))
+    modified_date : str
+    marketplace : str
+
+class Market_Places(SQLModel,table=True):
+    id:str = Field(default=None,primary_key=True)
+    marketplace_name : str
 
 def create_engine_sqlmodel():
     engine = create_engine(f'mysql+mysqlconnector://{DB_USER}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}')
     SQLModel.metadata.create_all(engine)
     return engine
 
+def buscar_lista_url(engine):
+    with Session(engine) as session:
+        markets = select(Market_Places.marketplace_name)
+        lista_market = session.exec(markets).all()
+        listas = []
+        for i in lista_market:
+            listas.append(i)
+    return listas
+
 def inserir_dados_csv(dtframe,engine):
     df = dtframe
 
     with Session(engine) as session:
-        for _, row in df.iterrows():
-            produto = Products(
-                product_name=row['product_name'],
-                reviews=float(row['reviews']),
-                reviews_qtd=int(row['reviews_qtd']),
-                product_price_local=row['product_price_local'],
-                product_price=float(row['product_price']),
-                insert_date=row['insert_date']
+        for i, linha in df.iterrows():
+            consulta = insert(Products).values(
+                product_name = linha['product_name'],
+                reviews = float(linha['reviews']),
+                reviews_qtd = int(linha['reviews_qtd']),
+                product_price_local = linha['product_price_local'],
+                product_price =float(linha['product_price']),
+                modified_date = linha['modified_date'],
+                marketplace = linha['marketplace']
+            ).on_duplicate_key_update(
+                product_name = linha['product_name'],
+                reviews = float(linha['reviews']),
+                reviews_qtd = int(linha['reviews_qtd']),
+                product_price_local = linha['product_price_local'],
+                product_price =float(linha['product_price']),
+                modified_date = linha['modified_date'],
+                marketplace = linha['marketplace']
             )
-            session.add(produto)
+            session.exec(consulta)
         session.commit()
         print("Dados inseridos com sucesso!")
 
