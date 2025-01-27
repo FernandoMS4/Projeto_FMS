@@ -51,7 +51,7 @@ class Products(SQLModel,table=True):
     product_price_local : str
     product_price_from : float
     product_price_to : float = Field(default=None,primary_key=True)
-    created_date : str = Field(default=datetime.now().strftime("%y/%m/%d %H:%M:%S"))
+    created_date : str = Field(default=datetime.now().strftime('%y-%m-%d %H:%M:%S'))
     modified_date : str
     marketplace : str
     product_url : str
@@ -81,12 +81,12 @@ def inserir_dados_csv(dtframe,engine):
     with Session(engine) as session:
         for i, linha in df.iterrows():
             consulta = insert(Products).values(
-                product_name = linha['product_name'],
+            product_name = linha['product_name'],
                 reviews = float(linha['reviews']),
                 reviews_qtd = int(linha['reviews_qtd']),
                 product_price_local = linha['product_price_local'],
                 product_price_from = linha['product_price_from'],
-                product_price_to = float(linha['product_price']),
+                product_price_to = float(linha['product_price_to']),
                 modified_date = linha['modified_date'],
                 marketplace = linha['marketplace'],
                 product_url = linha['product_url'],
@@ -97,7 +97,7 @@ def inserir_dados_csv(dtframe,engine):
                 reviews_qtd = int(linha['reviews_qtd']),
                 product_price_local = linha['product_price_local'],
                 product_price_from = linha['product_price_from'],
-                product_price_to = float(linha['product_price']),
+                product_price_to = float(linha['product_price_to']),
                 modified_date = linha['modified_date'],
                 marketplace = linha['marketplace'],
                 product_url = linha['product_url'],

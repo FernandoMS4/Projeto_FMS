@@ -22,7 +22,7 @@ def format_scrapy_amazon():
     df['product_price'] = (
         df['product_price'].astype('str')
         + '.'
-        + df['product_price_fraction'].fillna('0').astype('int').astype('str')
+        + df['product_price_fraction'].fillna('0').astype('str')
     )
     df['product_price'] = df['product_price'].astype('float')
     df['marketplace'] = 'amazon'
@@ -48,7 +48,11 @@ def format_scrapy_mercado_livre():
     df = df.drop_duplicates()
     df['reviews'] = df['reviews'].astype('float',2)
     df['reviews_qtd'] = df['reviews_qtd'].str.replace('(',' ').str.replace(')',' ').astype('int')
-    print(df.columns)
+    df['product_price_from'] = (df['product_price_from_fraction'].astype('str').str.replace('.','') + '.' + df['product_price_from_cents'].astype('str')).astype('float')
+    df['product_price_to'] = (df['product_price_to'].astype('str').str.replace('.','') + '.' + df['product_price_to_cents'].astype('str')).astype('float')
+    df['marketplace'] = 'mercado livre'
+    df = df.drop(columns=['product_price_from_fraction','product_price_from_cents','product_price_to_cents'])
+    return df
 
 if __name__ == '__main__':
     #df = format_scrapy_amazon()

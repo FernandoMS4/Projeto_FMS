@@ -70,10 +70,6 @@ def captura_produtos_mercado_livre(url: str):
                 else: 
                     product_img = produto.find('img', class_='poly-component__picture')['src']
                 
-                # product_img = produto.find(
-                #     'img', class_='poly-component__picture'
-                # )['src']
-
                 yield {
                     'product_name': None
                     if product_name is None
@@ -101,13 +97,13 @@ def captura_produtos_mercado_livre(url: str):
                     else product_price_to_cents.text,
                     'product_url': product_url,
                     'product_image': product_img,
-                    'modified_date': datetime.now().strftime('%y%m%d_%H%M%S'),
+                    'modified_date': datetime.now().strftime('%y-%m-%d %H:%M:%S'),
                 }
     time.sleep(1)
 
 
 if __name__ == '__main__':
-    url = 'https://lista.mercadolivre.com.br/escova-secadora-modeladora-revlon-root-booster-rvdr5292#D[A:escova%20secadora%20modeladora%20revlon%20root%20booster%20rvdr5292]'
+    url = 'https://lista.mercadolivre.com.br/controle-sem-fio#D[A:controle%20sem%20fio]'
     with open('../../data/produtos.jsonl', 'a', encoding='utf-8') as file:
         for i in captura_produtos_mercado_livre(url=url):
             file.write(json.dumps(i, ensure_ascii=False) + '\n')
