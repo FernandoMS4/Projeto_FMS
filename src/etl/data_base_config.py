@@ -18,6 +18,10 @@ DB_PORT = get_env('DB_PORT')
 DB_NAME = get_env('DB_NAME')
 
 def verificar_database():
+    """
+    Função que verifica se o database existe no ambiente e o cria caso não exista
+
+    """
     try:
         connection = mysql.connector.connect(
             host=DB_HOST,
@@ -45,10 +49,13 @@ class Products(SQLModel,table=True):
     reviews : float
     reviews_qtd : int
     product_price_local : str
-    product_price : float = Field(default=None,primary_key=True)
+    product_price_from : float
+    product_price_to : float = Field(default=None,primary_key=True)
     created_date : str = Field(default=datetime.now().strftime("%y/%m/%d %H:%M:%S"))
     modified_date : str
     marketplace : str
+    product_url : str
+    product_image : str
 
 class Market_Places(SQLModel,table=True):
     id:str = Field(default=None,primary_key=True)
@@ -78,17 +85,23 @@ def inserir_dados_csv(dtframe,engine):
                 reviews = float(linha['reviews']),
                 reviews_qtd = int(linha['reviews_qtd']),
                 product_price_local = linha['product_price_local'],
-                product_price =float(linha['product_price']),
+                product_price_from = linha['product_price_from'],
+                product_price_to = float(linha['product_price']),
                 modified_date = linha['modified_date'],
-                marketplace = linha['marketplace']
+                marketplace = linha['marketplace'],
+                product_url = linha['product_url'],
+                product_image = linha['product_image']  
             ).on_duplicate_key_update(
                 product_name = linha['product_name'],
                 reviews = float(linha['reviews']),
                 reviews_qtd = int(linha['reviews_qtd']),
                 product_price_local = linha['product_price_local'],
-                product_price =float(linha['product_price']),
+                product_price_from = linha['product_price_from'],
+                product_price_to = float(linha['product_price']),
                 modified_date = linha['modified_date'],
-                marketplace = linha['marketplace']
+                marketplace = linha['marketplace'],
+                product_url = linha['product_url'],
+                product_image = linha['product_image']
             )
             session.exec(consulta)
         session.commit()
