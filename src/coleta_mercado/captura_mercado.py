@@ -29,6 +29,7 @@ def captura_produtos_mercado_livre(url: str):
                 url1 = ''
             else:
                 url1 = next_url.find('a', href=True)['href']
+
             for produto in produtos:
 
                 product_name = produto.find(
@@ -63,9 +64,15 @@ def captura_produtos_mercado_livre(url: str):
                     'div', class_='poly-price__current'
                 ).find('span', class_='andes-money-amount__cents')
                 product_url = produto.find('a')['href']
-                product_img = produto.find(
-                    'img', class_='poly-component__picture'
-                )['src']
+                product_img = ''
+                if 'data:image' in produto.find('img', class_='poly-component__picture')['src']:
+                    product_img =  produto.find('img', class_='poly-component__picture')['data-src']
+                else: 
+                    product_img = produto.find('img', class_='poly-component__picture')['src']
+                
+                # product_img = produto.find(
+                #     'img', class_='poly-component__picture'
+                # )['src']
 
                 yield {
                     'product_name': None
@@ -100,8 +107,8 @@ def captura_produtos_mercado_livre(url: str):
 
 
 if __name__ == '__main__':
-    url = 'https://www.mercadolivre.com.br/climatizador-de-ar-wap-air-protect-135w-painel-touch-led-cor-branco-127v/p/MLB22878182'
+    url = 'https://lista.mercadolivre.com.br/escova-secadora-modeladora-revlon-root-booster-rvdr5292#D[A:escova%20secadora%20modeladora%20revlon%20root%20booster%20rvdr5292]'
     with open('../../data/produtos.jsonl', 'a', encoding='utf-8') as file:
         for i in captura_produtos_mercado_livre(url=url):
             file.write(json.dumps(i, ensure_ascii=False) + '\n')
-    # print(captura_produtos_mercado_livre(url=url))
+   # print(captura_produtos_mercado_livre(url=url))
