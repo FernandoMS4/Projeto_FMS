@@ -39,22 +39,30 @@ def format_scrapy_mercado_livre():
 
     try:
         df = pd.read_json(
-            'D:\PROJETO_WEBSCRAP_FMS\data\produtos.jsonl',
+            'D:\PROJETO_WEBSCRAP_FMS\\archive\produtos_250127_184950.jsonl',
+            dtype='str',
             lines=True
             )
     except KeyError as e:
         return print(f'Não foi possível ler o arquivo: {e}')
     
     df = df.drop_duplicates()
-    df['reviews'] = df['reviews'].astype('float',2)
+
+    df['reviews'] = df['reviews'].astype('float')
+
     df['reviews_qtd'] = df['reviews_qtd'].str.replace('(',' ').str.replace(')',' ').astype('int')
+
     df['product_price_from'] = (df['product_price_from_fraction'].astype('str').str.replace('.','') + '.' + df['product_price_from_cents'].astype('str')).astype('float')
+
     df['product_price_to'] = (df['product_price_to'].astype('str').str.replace('.','') + '.' + df['product_price_to_cents'].astype('str')).astype('float')
+
     df['marketplace'] = 'mercado livre'
+
     df = df.drop(columns=['product_price_from_fraction','product_price_from_cents','product_price_to_cents'])
     return df
 
 if __name__ == '__main__':
     #df = format_scrapy_amazon()
     #df.to_csv('data/dados_tratados.csv', header=True, index=False)
-    format_scrapy_mercado_livre()
+    df = format_scrapy_mercado_livre()
+    print(df)

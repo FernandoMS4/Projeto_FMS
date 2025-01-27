@@ -91,7 +91,7 @@ def captura_produtos_mercado_livre(url: str):
                     'product_price_from_cents': '0'
                     if product_price_from_cents is None
                     else product_price_from_cents,
-                    'product_price_to': product_price_to,
+                    'product_price_to': float(product_price_to),
                     'product_price_to_cents': '0'
                     if product_price_to_cents is None
                     else product_price_to_cents.text,
