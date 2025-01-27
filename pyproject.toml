@@ -12,6 +12,7 @@ pandas = "^2.2.3"
 sqlmodel = "^0.0.22"
 mysql-connector-python = "^9.1.0"
 python-dotenv = "^1.0.1"
+beautifulsoup4 = "^4.12.3"
 
 
 [build-system]

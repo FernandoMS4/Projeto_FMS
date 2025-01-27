@@ -25,6 +25,7 @@ class AmazonSpider(scrapy.Spider):
                 self.first_page +=1
                 yield response.follow(next_page, self.parse)
 
+
 #fetch('https://www.amazon.com/s?k=gaming+headsets&language=pt_BR&currency=BRL')
 #response.css('div.puisg-col-inner')
 #len(response.css('div.puisg-col-inner'))
