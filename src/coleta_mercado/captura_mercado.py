@@ -17,10 +17,16 @@ def captura_produtos_mercado_livre(url: str):
         response: str = requests.get(url1)
         if response.status_code == 200:
             soup = bs(response.text, 'html.parser')
+
             produtos = soup.find_all(
                 'div',
                 class_='andes-card poly-card poly-card--grid-card andes-card--flat andes-card--padding-0 andes-card--animated',
             )
+            if produtos is None or produtos == []:
+                produtos = soup.find_all(
+                    'div', class_='poly-card poly-card--list'
+                )
+
             next_url = soup.find(
                 'li',
                 class_='andes-pagination__button andes-pagination__button--next',
@@ -65,11 +71,20 @@ def captura_produtos_mercado_livre(url: str):
                 ).find('span', class_='andes-money-amount__cents')
                 product_url = produto.find('a')['href']
                 product_img = ''
-                if 'data:image' in produto.find('img', class_='poly-component__picture')['src']:
-                    product_img =  produto.find('img', class_='poly-component__picture')['data-src']
-                else: 
-                    product_img = produto.find('img', class_='poly-component__picture')['src']
-                
+                if (
+                    'data:image'
+                    in produto.find('img', class_='poly-component__picture')[
+                        'src'
+                    ]
+                ):
+                    product_img = produto.find(
+                        'img', class_='poly-component__picture'
+                    )['data-src']
+                else:
+                    product_img = produto.find(
+                        'img', class_='poly-component__picture'
+                    )['src']
+
                 yield {
                     'product_name': None
                     if product_name is None
@@ -91,13 +106,15 @@ def captura_produtos_mercado_livre(url: str):
                     'product_price_from_cents': '0'
                     if product_price_from_cents is None
                     else product_price_from_cents,
-                    'product_price_to': float(product_price_to),
+                    'product_price_to': product_price_to,
                     'product_price_to_cents': '0'
                     if product_price_to_cents is None
                     else product_price_to_cents.text,
                     'product_url': product_url,
                     'product_image': product_img,
-                    'modified_date': datetime.now().strftime('%y-%m-%d %H:%M:%S'),
+                    'modified_date': datetime.now().strftime(
+                        '%y-%m-%d %H:%M:%S'
+                    ),
                 }
     time.sleep(1)
 
@@ -107,4 +124,4 @@ if __name__ == '__main__':
     with open('../../data/produtos.jsonl', 'a', encoding='utf-8') as file:
         for i in captura_produtos_mercado_livre(url=url):
             file.write(json.dumps(i, ensure_ascii=False) + '\n')
-   # print(captura_produtos_mercado_livre(url=url))
+# print(captura_produtos_mercado_livre(url=url))

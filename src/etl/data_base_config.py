@@ -1,4 +1,4 @@
-from sqlmodel import  Field,SQLModel,Session,create_engine,select
+from sqlmodel import Field, SQLModel, Session, create_engine, select
 from sqlalchemy.dialects.mysql import insert
 import mysql.connector
 import os
@@ -7,15 +7,18 @@ from datetime import datetime
 
 load_dotenv(find_dotenv())
 
+
 def get_env(key, default=None):
     value = os.getenv(key)
     return default if value is None else value
+
 
 DB_HOST = get_env('DB_HOST')
 DB_USER = get_env('DB_USER')
 DB_PASSWORD = get_env('DB_PASSWORD')
 DB_PORT = get_env('DB_PORT')
 DB_NAME = get_env('DB_NAME')
+
 
 def verificar_database():
     """
@@ -24,47 +27,53 @@ def verificar_database():
     """
     try:
         connection = mysql.connector.connect(
-            host=DB_HOST,
-            user=DB_USER,
-            password=DB_PASSWORD
+            host=DB_HOST, user=DB_USER, password=DB_PASSWORD
         )
         cursor = connection.cursor()
-        
+
         cursor.execute(f"show databases like '{DB_NAME}'")
         result = cursor.fetchone()
-        
+
         if not result:
-            cursor.execute(f"CREATE DATABASE {DB_NAME}")
+            cursor.execute(f'CREATE DATABASE {DB_NAME}')
             print(f"Banco de dados '{DB_NAME}' criado com sucesso.")
         else:
             print(f"Banco de dados '{DB_NAME}' já existe.")
-        
+
         cursor.close()
         connection.close()
     except mysql.connector.Error as err:
-        print(f"Erro ao verificar/criar o banco de dados: {err}")
+        print(f'Erro ao verificar/criar o banco de dados: {err}')
 
-class Products(SQLModel,table=True):
-    product_name : str = Field(default=None,primary_key=True)
-    reviews : float
-    reviews_qtd : int
-    product_price_local : str
-    product_price_from : float
-    product_price_to : float = Field(default=None,primary_key=True)
-    created_date : str = Field(default=datetime.now().strftime('%y-%m-%d %H:%M:%S'))
-    modified_date : str
-    marketplace : str
-    product_url : str
-    product_image : str
 
-class Market_Places(SQLModel,table=True):
-    id:str = Field(default=None,primary_key=True)
-    marketplace_name : str
+class Products(SQLModel, table=True):
+    product_name: str = Field(default=None, primary_key=True)
+    reviews: float
+    reviews_qtd: int
+    product_price_local: str
+    product_price_from: float
+    product_price_to: float = Field(default=None, primary_key=True)
+    created_date: datetime = Field(
+        default=datetime.now().strftime('%y-%m-%d %H:%M:%S')
+    )
+    modified_date: datetime
+    marketplace: str
+    product_url: str
+    product_image: str
+
+
+class Market_Places(SQLModel, table=True):
+    id: str = Field(default=None, primary_key=True)
+    marketplace_name: str
+
 
 def create_engine_sqlmodel():
-    engine = create_engine(f'mysql+mysqlconnector://{DB_USER}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}')
+    engine = create_engine(
+        f'mysql+mysqlconnector://{DB_USER}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}'
+    )
     SQLModel.metadata.create_all(engine)
     return engine
+
 
 def buscar_lista_url(engine):
     with Session(engine) as session:
@@ -75,37 +84,43 @@ def buscar_lista_url(engine):
             listas.append(i)
     return listas
 
-def inserir_dados_csv(dtframe,engine):
+
+def inserir_dados_csv(dtframe, engine):
     df = dtframe
 
     with Session(engine) as session:
         for i, linha in df.iterrows():
-            consulta = insert(Products).values(
-            product_name = linha['product_name'],
-                reviews = float(linha['reviews']),
-                reviews_qtd = int(linha['reviews_qtd']),
-                product_price_local = linha['product_price_local'],
-                product_price_from = linha['product_price_from'],
-                product_price_to = float(linha['product_price_to']),
-                modified_date = linha['modified_date'],
-                marketplace = linha['marketplace'],
-                product_url = linha['product_url'],
-                product_image = linha['product_image']  
-            ).on_duplicate_key_update(
-                product_name = linha['product_name'],
-                reviews = float(linha['reviews']),
-                reviews_qtd = int(linha['reviews_qtd']),
-                product_price_local = linha['product_price_local'],
-                product_price_from = linha['product_price_from'],
-                product_price_to = float(linha['product_price_to']),
-                modified_date = linha['modified_date'],
-                marketplace = linha['marketplace'],
-                product_url = linha['product_url'],
-                product_image = linha['product_image']
+            consulta = (
+                insert(Products)
+                .values(
+                    product_name=linha['product_name'],
+                    reviews=float(linha['reviews']),
+                    reviews_qtd=int(linha['reviews_qtd']),
+                    product_price_local=linha['product_price_local'],
+                    product_price_from=linha['product_price_from'],
+                    product_price_to=float(linha['product_price_to']),
+                    modified_date=linha['modified_date'],
+                    marketplace=linha['marketplace'],
+                    product_url=linha['product_url'],
+                    product_image=linha['product_image'],
+                )
+                .on_duplicate_key_update(
+                    product_name=linha['product_name'],
+                    reviews=float(linha['reviews']),
+                    reviews_qtd=int(linha['reviews_qtd']),
+                    product_price_local=linha['product_price_local'],
+                    product_price_from=linha['product_price_from'],
+                    product_price_to=float(linha['product_price_to']),
+                    modified_date=linha['modified_date'],
+                    marketplace=linha['marketplace'],
+                    product_url=linha['product_url'],
+                    product_image=linha['product_image'],
+                )
             )
             session.exec(consulta)
         session.commit()
-        print("Dados inseridos com sucesso!")
+        print('Dados inseridos com sucesso!')
+
 
 if __name__ == '__main__':
     print(verificar_database())
