@@ -4,7 +4,7 @@ import os
 
 def format_scrapy_amazon():
     try:
-        df = pd.read_json('data\data_amazon_final.jsonl', lines=True)
+        df = pd.read_json('data/data_amazon_final.jsonl', lines=True)
     except KeyError as e:
         return print(f'Não foi possível ler o arquivo: {e}')
     df['reviews'] = (
@@ -33,13 +33,14 @@ def format_scrapy_amazon():
 
 def format_scrapy_mercado_livre(reprocess: bool) -> bool:
     """
-    Lê o arquivo coletado json e realiza o tratamento dos dados e padroniza de acordo com a tabela de produtos
+    Lê o arquivo coletado json e realiza o tratamento dos dados e padroniza de acordo com a tabela de produtos \n
+    reprocess = True or False
 
     """
     if reprocess == False:
         try:
-            df = pd.read_json(
-                'data\produtos.jsonl',
+            df: pd.DataFrame = pd.read_json(
+                'data/produtos.jsonl',
                 dtype='str',
                 lines=True,
             )
@@ -47,7 +48,7 @@ def format_scrapy_mercado_livre(reprocess: bool) -> bool:
             return print(f'Não foi possível ler o arquivo: {e}')
     elif reprocess == True:
         try:
-            files = [f for f in os.listdir('archive/')]
+            files: list = [f for f in os.listdir('archive/')]
             df: pd.DataFrame = pd.DataFrame()
             for i in files:
                 df_concat = pd.read_json(

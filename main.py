@@ -18,16 +18,6 @@ if __name__ == '__main__':
     if os.path.exists('archive') == False:
         os.mkdir('archive')
 
-    # url = [
-    #     'https://lista.mercadolivre.com.br/controle-sem-fio#D[A:controle%20sem%20fio]',
-    #     'https://lista.mercadolivre.com.br/bíblia-da-mulher-de-fé%2C-nvi%2C-couro-soft%2C-lírios-do-campo%2C-de-walsh%2C-sheila.-editorial-vida-melhor-editora-s.a-em-portugu#D[A:Bíblia%20da%20Mulher%20de%20Fé,%20NVI,%20Couro%20Soft,%20Lírios%20do%20Campo,%20de%20Walsh,%20Sheila.%20Editorial%20Vida%20Melhor%20Editora%20S.A%20em%20portugu]',
-    #     'https://lista.mercadolivre.com.br/livro-bíblia-da-mulher-de-fé%2C-nvi%2C-letra-grande%2C-couro-soft#D[A:Livro%20Bíblia%20Da%20Mulher%20De%20Fé,%20Nvi,%20Letra%20Grande,%20Couro-soft]',
-    #     'https://lista.mercadolivre.com.br/samsung-galaxy-s23-ultra-(esim)-5g-256-gb-verde-12-gb',
-    #     'https://lista.mercadolivre.com.br/escova-secadora-modeladora-revlon-root-booster-rvdr5292#D[A:Escova%20Secadora%20Modeladora%20Revlon%20Root%20Booster%20Rvdr5292]',
-    #     'https://lista.mercadolivre.com.br/climatizador-de-ar-wap-air-protect-135w-painel-touch-led-cor-branco-127v#D[A:Climatizador%20De%20Ar%20Wap%20Air%20Protect%20135w%20Painel%20Touch%20Led%20Cor%20Branco%20127V]',
-    #     'https://lista.mercadolivre.com.br/fritadeira-elétrica-wap-air-fryer-barbecue-12-em-1-1800w-127v#D[A:Fritadeira%20Elétrica%20Wap%20Air%20Fryer%20Barbecue%2012%20em%201%201800W%20127V]',
-    # ]
-
     url = [
         'https://lista.mercadolivre.com.br/samsung-galaxy-s23-ultra-(esim)-5g-256-gb-verde-12-gb'
     ]
@@ -40,7 +30,7 @@ if __name__ == '__main__':
                     file.write(json.dumps(i, ensure_ascii=False) + '\n')
 
     df = format_scrapy_mercado_livre(reprocess=reprocess)
-    verificar_database()
+    #verificar_database()
     engines = create_engine_sqlmodel()
     inserir_dados_csv(df, engine=engines)
     data_hora = datetime.now().strftime('%y%m%d_%H%M%S')

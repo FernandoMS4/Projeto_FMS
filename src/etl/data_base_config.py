@@ -7,8 +7,7 @@ from datetime import datetime
 
 load_dotenv(find_dotenv())
 
-
-def get_env(key, default=None):
+def get_env(key, default = None):
     value = os.getenv(key)
     return default if value is None else value
 
@@ -71,7 +70,8 @@ class Market_Places(SQLModel, table=True):
 
 def create_engine_sqlmodel():
     engine = create_engine(
-        f'mysql+mysqlconnector://{DB_USER}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}'
+        #f'mysql+mysqlconnector://{DB_USER}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}'
+        "mysql+mysqlconnector://root@host.docker.internal:3306/web_scraping"
     )
     SQLModel.metadata.create_all(engine)
     return engine
