@@ -22,7 +22,9 @@ DB_NAME = get_env('DB_NAME')
 
 def verificar_database():
     """
-    Função que verifica se o database existe no ambiente e o cria caso não exista
+    Função que verifica se o database existe no ambiente e o cria caso não exista\n
+    Variaveis passadas no  arquivo .env conforme necessidade\n
+    Connector: MysqlConnector
 
     """
     try:
@@ -81,7 +83,7 @@ def buscar_lista_url(engine):
         lista_market = session.exec(markets).all()
         listas = []
         for i in lista_market:
-            listas.append(i)
+            listas.append(i.lower)
     return listas
 
 

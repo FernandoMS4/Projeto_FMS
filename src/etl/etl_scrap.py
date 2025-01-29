@@ -1,11 +1,10 @@
 import pandas as pd
 import os
 
+
 def format_scrapy_amazon():
     try:
-        df = pd.read_json(
-            'data\data_amazon_final.jsonl', lines=True
-        )
+        df = pd.read_json('data\data_amazon_final.jsonl', lines=True)
     except KeyError as e:
         return print(f'Não foi possível ler o arquivo: {e}')
     df['reviews'] = (
@@ -32,7 +31,7 @@ def format_scrapy_amazon():
     return df
 
 
-def format_scrapy_mercado_livre(reprocess:bool) ->bool:
+def format_scrapy_mercado_livre(reprocess: bool) -> bool:
     """
     Lê o arquivo coletado json e realiza o tratamento dos dados e padroniza de acordo com a tabela de produtos
 
@@ -49,17 +48,16 @@ def format_scrapy_mercado_livre(reprocess:bool) ->bool:
     elif reprocess == True:
         try:
             files = [f for f in os.listdir('archive/')]
-            df:pd.DataFrame = pd.DataFrame()
+            df: pd.DataFrame = pd.DataFrame()
             for i in files:
-                df_concat = pd.read_json(f'archive/{i}',
-                                         dtype='str',
-                                         lines=True
-                                        )
-                df = pd.concat([df,df_concat])
+                df_concat = pd.read_json(
+                    f'archive/{i}', dtype='str', lines=True
+                )
+                df = pd.concat([df, df_concat])
         except KeyError as e:
             print(f'Arquivos não encontrados {e} : {files}')
 
-    df = df.sort_values(by=['product_name','modified_date'])
+    df = df.sort_values(by=['product_name', 'modified_date'])
 
     df = df.drop_duplicates()
 

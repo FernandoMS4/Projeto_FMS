@@ -28,15 +28,17 @@ if __name__ == '__main__':
     #     'https://lista.mercadolivre.com.br/fritadeira-elétrica-wap-air-fryer-barbecue-12-em-1-1800w-127v#D[A:Fritadeira%20Elétrica%20Wap%20Air%20Fryer%20Barbecue%2012%20em%201%201800W%20127V]',
     # ]
 
-    url = ['https://lista.mercadolivre.com.br/samsung-galaxy-s23-ultra-(esim)-5g-256-gb-verde-12-gb']
+    url = [
+        'https://lista.mercadolivre.com.br/samsung-galaxy-s23-ultra-(esim)-5g-256-gb-verde-12-gb'
+    ]
 
-    reprocess:bool = False
+    reprocess: bool = False
     if reprocess == False:
         for i in url:
             with open('data/produtos.jsonl', 'a', encoding='utf-8') as file:
                 for i in captura_produtos_mercado_livre(url=i):
                     file.write(json.dumps(i, ensure_ascii=False) + '\n')
-    
+
     df = format_scrapy_mercado_livre(reprocess=reprocess)
     verificar_database()
     engines = create_engine_sqlmodel()
