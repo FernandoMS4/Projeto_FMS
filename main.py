@@ -30,7 +30,7 @@ if __name__ == '__main__':
                     file.write(json.dumps(i, ensure_ascii=False) + '\n')
 
     df = format_scrapy_mercado_livre(reprocess=reprocess)
-    #verificar_database()
+    verificar_database()
     engines = create_engine_sqlmodel()
     inserir_dados_csv(df, engine=engines)
     data_hora = datetime.now().strftime('%y%m%d_%H%M%S')

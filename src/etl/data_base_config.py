@@ -1,4 +1,4 @@
-from sqlmodel import Field, SQLModel, Session, create_engine, select
+from sqlmodel import Field, SQLModel, Session, create_engine, select,String
 from sqlalchemy.dialects.mysql import insert
 import mysql.connector
 import os
@@ -59,8 +59,8 @@ class Products(SQLModel, table=True):
     )
     modified_date: datetime
     marketplace: str
-    product_url: str
-    product_image: str
+    product_url: str = Field(sa_column=String(4000))
+    product_image: str = Field(sa_column=String(4000))
 
 
 class Market_Places(SQLModel, table=True):
@@ -70,8 +70,7 @@ class Market_Places(SQLModel, table=True):
 
 def create_engine_sqlmodel():
     engine = create_engine(
-        #f'mysql+mysqlconnector://{DB_USER}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}'
-        "mysql+mysqlconnector://root@host.docker.internal:3306/web_scraping"
+        f'mysql+mysqlconnector://{DB_USER}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}'
     )
     SQLModel.metadata.create_all(engine)
     return engine
