@@ -1,5 +1,6 @@
-from sqlmodel import Field, SQLModel, Session, create_engine, select,String
+from sqlmodel import Field, SQLModel, Session, create_engine, select
 from sqlalchemy.dialects.mysql import insert
+from sqlalchemy import String
 import mysql.connector
 import os
 from dotenv import load_dotenv, find_dotenv
@@ -59,8 +60,8 @@ class Products(SQLModel, table=True):
     )
     modified_date: datetime
     marketplace: str
-    product_url: str = Field(sa_column=String(4000))
-    product_image: str = Field(sa_column=String(4000))
+    product_url: str = Field(sa_type=String(4000))
+    product_image: str = Field(sa_type=String(4000))
 
 
 class Market_Places(SQLModel, table=True):
