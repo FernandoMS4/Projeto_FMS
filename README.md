@@ -28,9 +28,8 @@ DB_NAME = "web_scraping"
 ```
 
 ```
-TODO: 
+TO DO: 
     - Implementar logs
-    - Implementar Docker
     - Implementar Airflow(ainda vou ver a viabilidade)
     - Verificar possíveis vulnerabilidades
     - Implementar middleware
