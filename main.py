@@ -19,7 +19,6 @@ if __name__ == '__main__':
         os.mkdir('archive')
 
     verificar_database()
-
     engines = create_engine_sqlmodel()
 
     url = [
@@ -45,7 +44,6 @@ if __name__ == '__main__':
 
     inserir_dados_csv(df, engine=engines)
 
-    
     try:
         try:
             data_hora = datetime.now().strftime('%y%m%d_%H%M%S')
