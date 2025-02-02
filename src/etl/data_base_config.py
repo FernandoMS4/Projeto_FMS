@@ -1,14 +1,283 @@
-from sqlmodel import Field, SQLModel, Session, create_engine, select
+from sqlmodel import (
+    Field,
+    SQLModel,
+    Session,
+    create_engine,
+    select,
+    Column,
+    TIMESTAMP,
+    text,
+)
 from sqlalchemy.dialects.mysql import insert
 from sqlalchemy import String
+from typing import Optional
 import mysql.connector
 import os
 from dotenv import load_dotenv, find_dotenv
 from datetime import datetime
 
+
+class Products(SQLModel, table=True):
+    """
+    Esta tabela serve para armazenar os produtos do scrapping
+    """
+    product_name: str = Field(default=None, primary_key=True)
+    reviews: float
+    reviews_qtd: int
+    product_price_local: str
+    product_price_from: float
+    product_price_to: float = Field(default=None, primary_key=True)
+    created_date: datetime = Field(
+        default=datetime.now().strftime('%y-%m-%d %H:%M:%S')
+    )
+    modified_date: datetime
+    marketplace: str
+    product_url: str = Field(sa_type=String(4000))
+    product_image: str = Field(sa_type=String(4000))
+
+
+class Market_Places(SQLModel, table=True):
+    id: str = Field(default=None, primary_key=True)
+    marketplace_name: str
+
+
+class Status_User(SQLModel, table=True):
+    id: int = Field(default=None, primary_key=True)
+    name: str = Field(sa_type=String(40))
+    created_at: datetime = Field(
+        sa_column=Column(
+            TIMESTAMP, server_default=text('CURRENT_TIMESTAMP'), nullable=False
+        )
+    )
+    updated_at: datetime = Field(
+        sa_column=Column(
+            TIMESTAMP,
+            server_default=text('CURRENT_TIMESTAMP'),
+            nullable=False,
+            onupdate=datetime.now,
+        )
+    )
+
+
+class Roles(SQLModel, table=True):
+    id: int = Field(default=None, primary_key=True)
+    name: str = Field(max_length=40, nullable=False)
+    create_at: datetime = Field(
+        sa_column=Column(
+            TIMESTAMP, server_default=text('CURRENT_TIMESTAMP'), nullable=False
+        )
+    )
+    update_at: datetime = Field(
+        sa_column=Column(
+            TIMESTAMP,
+            server_default=text('CURRENT_TIMESTAMP'),
+            onupdate=datetime.now,
+            nullable=False,
+        )
+    )
+
+
+class Users(SQLModel, table=True):
+    id: int = Field(default=None, primary_key=True)
+    name: str = Field(max_length=100, nullable=False)
+    email: str = Field(default=None, max_length=70, nullable=True)
+    password: str = Field(default=None, max_length=40, nullable=True)
+    create_at: datetime = Field(
+        sa_column=Column(
+            TIMESTAMP, server_default=text('CURRENT_TIMESTAMP'), nullable=False
+        )
+    )
+    update_at: datetime = Field(
+        sa_column=Column(
+            TIMESTAMP,
+            server_default=text('CURRENT_TIMESTAMP'),
+            onupdate=datetime.now,
+            nullable=False,
+        )
+    )
+    status_id: int = Field(
+        default=1, foreign_key='status_user.id', nullable=False
+    )
+    email_confirmed: bool = Field(default=None, nullable=True)
+    hash_email_confirm: str = Field(default=None, max_length=80, nullable=True)
+
+
+class StatusUser(SQLModel, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    name: str = Field(max_length=40)
+    create_at: datetime = Field(
+        sa_column=Column(
+            TIMESTAMP, server_default=text('CURRENT_TIMESTAMP'), nullable=False
+        )
+    )
+    update_at: datetime = Field(
+        default_factory=datetime.now,
+        sa_column_kwargs={'onupdate': datetime.now},
+    )
+
+
+class Role(SQLModel, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    name: str = Field(max_length=40)
+    create_at: datetime = Field(
+        sa_column=Column(
+            TIMESTAMP, server_default=text('CURRENT_TIMESTAMP'), nullable=False
+        )
+    )
+    update_at: datetime = Field(
+        sa_column=Column(
+            TIMESTAMP,
+            server_default=text('CURRENT_TIMESTAMP'),
+            nullable=False,
+            onupdate=datetime.now,
+        )
+    )
+
+
+class User(SQLModel, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    name: str = Field(max_length=100)
+    email: Optional[str] = Field(default=None, max_length=70)
+    password: Optional[str] = Field(default=None, max_length=40)
+    create_at: datetime = Field(
+        sa_column=Column(
+            TIMESTAMP, server_default=text('CURRENT_TIMESTAMP'), nullable=False
+        )
+    )
+    update_at: datetime = Field(
+        sa_column=Column(
+            TIMESTAMP,
+            server_default=text('CURRENT_TIMESTAMP'),
+            nullable=False,
+            onupdate=datetime.now,
+        )
+    )
+    status_id: int = Field(foreign_key='statususer.id', default=1)
+    email_confirmed: Optional[bool] = Field(default=None)
+    hash_email_confirm: Optional[str] = Field(default=None, max_length=20)
+
+
+class RoleUser(SQLModel, table=True):
+    user_id: int = Field(foreign_key='user.id', primary_key=True)
+    role_id: int = Field(foreign_key='role.id', primary_key=True)
+
+
+class Token(SQLModel, table=True):
+    token: str = Field(primary_key=True)
+    refresh_token: str
+    expiration: datetime
+    user_id: int = Field(foreign_key='user.id')
+
+
+class HashTokenPassword(SQLModel, table=True):
+    token: str = Field(primary_key=True)
+    expiration: datetime
+    user_id: int = Field(foreign_key='user.id')
+
+
+class Gender(SQLModel, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    name: str = Field(max_length=40)
+    create_at: datetime = Field(
+        sa_column=Column(
+            TIMESTAMP, server_default=text('CURRENT_TIMESTAMP'), nullable=False
+        )
+    )
+    update_at: datetime = Field(
+        sa_column=Column(
+            TIMESTAMP,
+            server_default=text('CURRENT_TIMESTAMP'),
+            nullable=False,
+            onupdate=datetime.now,
+        )
+    )
+
+
+class UserDetail(SQLModel, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    birth_date: datetime
+    create_at: datetime = Field(
+        sa_column=Column(
+            TIMESTAMP, server_default=text('CURRENT_TIMESTAMP'), nullable=False
+        )
+    )
+    update_at: datetime = Field(
+        sa_column=Column(
+            TIMESTAMP,
+            server_default=text('CURRENT_TIMESTAMP'),
+            nullable=False,
+            onupdate=datetime.now,
+        )
+    )
+    user_id: int = Field(foreign_key='user.id')
+    gender_id: int = Field(foreign_key='gender.id')
+    gender_additional_details: Optional[str] = Field(
+        default=None, max_length=70
+    )
+
+
+class Address(SQLModel, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    number: Optional[str] = Field(default=None, max_length=12)
+    street: str = Field(max_length=70)
+    neighborhood: Optional[str] = Field(default=None, max_length=50)
+    state: Optional[str] = Field(default=None, max_length=40)
+    country: Optional[str] = Field(default=None, max_length=70)
+    cep: Optional[str] = Field(default=None, max_length=12)
+    additional_address_details: Optional[str] = Field(
+        default=None, max_length=40
+    )
+    lat: Optional[float] = Field(default=None)
+    lng: Optional[float] = Field(default=None)
+    city: Optional[str] = Field(default=None, max_length=100)
+    create_at: datetime = Field(
+        sa_column=Column(
+            TIMESTAMP, server_default=text('CURRENT_TIMESTAMP'), nullable=False
+        )
+    )
+    update_at: datetime = Field(
+        sa_column=Column(
+            TIMESTAMP,
+            server_default=text('CURRENT_TIMESTAMP'),
+            nullable=False,
+            onupdate=datetime.now,
+        )
+    )
+
+
+class AddressUserDetail(SQLModel, table=True):
+    user_detail_id: Optional[int] = Field(default=None, primary_key=True)
+    address_id: int = Field(foreign_key='address.id')
+
+
+class EmailTemplate(SQLModel, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    message: str
+    template_identifier: str = Field(max_length=30)
+    create_at: datetime = Field(
+        sa_column=Column(
+            TIMESTAMP, server_default=text('CURRENT_TIMESTAMP'), nullable=False
+        )
+    )
+    update_at: datetime = Field(
+        sa_column=Column(
+            TIMESTAMP,
+            server_default=text('CURRENT_TIMESTAMP'),
+            nullable=False,
+            onupdate=datetime.now,
+        )
+    )
+
+
+class Setting(SQLModel, table=True):
+    id: int = Field(primary_key=True)
+    expiration_token_hours: int = Field(default=2)
+
+
 load_dotenv(find_dotenv())
 
-def get_env(key, default = None):
+
+def get_env(key, default=None):
     value = os.getenv(key)
     return default if value is None else value
 
@@ -46,27 +315,6 @@ def verificar_database():
         connection.close()
     except mysql.connector.Error as err:
         print(f'Erro ao verificar/criar o banco de dados: {err}')
-
-
-class Products(SQLModel, table=True):
-    product_name: str = Field(default=None, primary_key=True)
-    reviews: float
-    reviews_qtd: int
-    product_price_local: str
-    product_price_from: float
-    product_price_to: float = Field(default=None, primary_key=True)
-    created_date: datetime = Field(
-        default=datetime.now().strftime('%y-%m-%d %H:%M:%S')
-    )
-    modified_date: datetime
-    marketplace: str
-    product_url: str = Field(sa_type=String(4000))
-    product_image: str = Field(sa_type=String(4000))
-
-
-class Market_Places(SQLModel, table=True):
-    id: str = Field(default=None, primary_key=True)
-    marketplace_name: str
 
 
 def create_engine_sqlmodel():
