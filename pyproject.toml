@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "projeto-webscrap-fms"
+name = "projeto_webscrap_fms"
 version = "0.1.0"
 description = ""
 authors = ["FernandoMS4 <fernando381046@gmail.com>"]

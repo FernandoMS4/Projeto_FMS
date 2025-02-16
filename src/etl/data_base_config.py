@@ -59,7 +59,8 @@ class Status_User(SQLModel, table=True):
     )
 
 
-class Roles(SQLModel, table=True):
+class Role(SQLModel, table=True):
+
     id: int = Field(default=None, primary_key=True)
     name: str = Field(max_length=40, nullable=False)
     create_at: datetime = Field(
@@ -116,7 +117,7 @@ class StatusUser(SQLModel, table=True):
     )
 
 
-class Role(SQLModel, table=True):
+class Roles(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     name: str = Field(max_length=40)
     create_at: datetime = Field(
@@ -152,30 +153,30 @@ class User(SQLModel, table=True):
             onupdate=datetime.now,
         )
     )
-    status_id: int = Field(foreign_key='statususer.id', default=1)
+    status_id: int = Field(foreign_key='status_user.id', default=1)
     email_confirmed: Optional[bool] = Field(default=None)
     hash_email_confirm: Optional[str] = Field(default=None, max_length=20)
 
 
-class RoleUser(SQLModel, table=True):
-    user_id: int = Field(foreign_key='user.id', primary_key=True)
-    role_id: int = Field(foreign_key='role.id', primary_key=True)
+class Roles_Users(SQLModel, table=True):
+    user_id: int = Field(foreign_key='users.id', primary_key=True)
+    role_id: int = Field(foreign_key='roles.id', primary_key=True)
 
 
-class Token(SQLModel, table=True):
+class Tokens(SQLModel, table=True):
     token: str = Field(primary_key=True)
     refresh_token: str
     expiration: datetime
-    user_id: int = Field(foreign_key='user.id')
+    user_id: int = Field(foreign_key='users.id')
 
 
-class HashTokenPassword(SQLModel, table=True):
+class Hash_Tokens_Password(SQLModel, table=True):
     token: str = Field(primary_key=True)
     expiration: datetime
-    user_id: int = Field(foreign_key='user.id')
+    user_id: int = Field(foreign_key='users.id')
 
 
-class Gender(SQLModel, table=True):
+class Genders(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     name: str = Field(max_length=40)
     create_at: datetime = Field(
@@ -193,7 +194,7 @@ class Gender(SQLModel, table=True):
     )
 
 
-class UserDetail(SQLModel, table=True):
+class User_Details(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     birth_date: datetime
     create_at: datetime = Field(
@@ -209,14 +210,14 @@ class UserDetail(SQLModel, table=True):
             onupdate=datetime.now,
         )
     )
-    user_id: int = Field(foreign_key='user.id')
-    gender_id: int = Field(foreign_key='gender.id')
+    user_id: int = Field(foreign_key='users.id')
+    gender_id: int = Field(foreign_key='genders.id')
     gender_additional_details: Optional[str] = Field(
         default=None, max_length=70
     )
 
 
-class Address(SQLModel, table=True):
+class Addresses(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     number: Optional[str] = Field(default=None, max_length=12)
     street: str = Field(max_length=70)
@@ -245,12 +246,12 @@ class Address(SQLModel, table=True):
     )
 
 
-class AddressUserDetail(SQLModel, table=True):
+class Addresses_User_Details(SQLModel, table=True):
     user_detail_id: Optional[int] = Field(default=None, primary_key=True)
-    address_id: int = Field(foreign_key='address.id')
+    address_id: int = Field(foreign_key='addresses.id')
 
 
-class EmailTemplate(SQLModel, table=True):
+class Email_Templates(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     message: str
     template_identifier: str = Field(max_length=30)
@@ -269,7 +270,7 @@ class EmailTemplate(SQLModel, table=True):
     )
 
 
-class Setting(SQLModel, table=True):
+class Settings(SQLModel, table=True):
     id: int = Field(primary_key=True)
     expiration_token_hours: int = Field(default=2)
 
