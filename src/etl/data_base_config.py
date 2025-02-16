@@ -8,7 +8,7 @@ from sqlmodel import (
     TIMESTAMP,
     text,
 )
-from sqlalchemy.dialects.mysql import insert
+from sqlalchemy.dialects.mysql import insert,TEXT
 from sqlalchemy import String
 from typing import Optional
 import mysql.connector
@@ -19,7 +19,7 @@ from datetime import datetime
 
 class Products(SQLModel, table=True):
     """
-    Esta tabela serve para armazenar os produtos do scrapping
+    Esta tabela serve para armazenar os produtos
     """
     product_name: str = Field(default=None, primary_key=True)
     reviews: float
@@ -40,6 +40,10 @@ class Market_Places(SQLModel, table=True):
     id: str = Field(default=None, primary_key=True)
     marketplace_name: str
 
+class Market_Place_Search_Products(SQLModel, table=True):
+    id: int = Field(default=None, primary_key=True)
+    brand: str = Field(sa_type=String(25))
+    product_name: str
 
 class Status_User(SQLModel, table=True):
     id: int = Field(default=None, primary_key=True)
@@ -253,7 +257,7 @@ class Addresses_User_Details(SQLModel, table=True):
 
 class Email_Templates(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
-    message: str
+    message: str = Field(sa_column=Column(TEXT))
     template_identifier: str = Field(max_length=30)
     create_at: datetime = Field(
         sa_column=Column(

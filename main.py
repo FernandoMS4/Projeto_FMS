@@ -29,6 +29,12 @@ if __name__ == '__main__':
         'https://lista.mercadolivre.com.br/escova-secadora-modeladora-revlon-root-booster-rvdr5292#D[A:Escova%20Secadora%20Modeladora%20Revlon%20Root%20Booster%20Rvdr5292]',
         'https://lista.mercadolivre.com.br/climatizador-de-ar-wap-air-protect-135w-painel-touch-led-cor-branco-127v#D[A:Climatizador%20De%20Ar%20Wap%20Air%20Protect%20135w%20Painel%20Touch%20Led%20Cor%20Branco%20127V]',
         'https://lista.mercadolivre.com.br/fritadeira-elétrica-wap-air-fryer-barbecue-12-em-1-1800w-127v#D[A:Fritadeira%20Elétrica%20Wap%20Air%20Fryer%20Barbecue%2012%20em%201%201800W%20127V]',
+        'https://lista.mercadolivre.com.br/escada-de-alumínio#D[A:Escada%20de%20Alumínio]'
+        ,'https://lista.mercadolivre.com.br/fone-de-ouvido#D[A:fone%20de%20ouvido]'
+        ,'https://lista.mercadolivre.com.br/cueca_Noindex_True'
+        ,'https://lista.mercadolivre.com.br/cabo-usb_Noindex_True'
+        ,'https://lista.mercadolivre.com.br/carregador_Noindex_True'
+        ,'https://lista.mercadolivre.com.br/tenis_Noindex_True'
     ]
 
     reprocess: bool = False
