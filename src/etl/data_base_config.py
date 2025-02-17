@@ -21,7 +21,8 @@ class Products(SQLModel, table=True):
     """
     Esta tabela serve para armazenar os produtos
     """
-    product_name: str = Field(default=None, primary_key=True)
+    product_id: str = Field(default=None,primary_key=True)
+    product_name: str = Field(default=None)
     reviews: float
     reviews_qtd: int
     product_price_local: str
@@ -31,7 +32,7 @@ class Products(SQLModel, table=True):
         default=datetime.now().strftime('%y-%m-%d %H:%M:%S')
     )
     modified_date: datetime
-    marketplace: str
+    marketplace: str = Field(default=None, primary_key=True)
     product_url: str = Field(sa_type=String(4000))
     product_image: str = Field(sa_type=String(4000))
 
@@ -314,8 +315,7 @@ def verificar_database():
             cursor.execute(f'CREATE DATABASE {DB_NAME}')
             print(f"Banco de dados '{DB_NAME}' criado com sucesso.")
         else:
-            print(f"Banco de dados '{DB_NAME}' já existe.")
-
+            pass
         cursor.close()
         connection.close()
     except mysql.connector.Error as err:
@@ -348,6 +348,7 @@ def inserir_dados_csv(dtframe, engine):
             consulta = (
                 insert(Products)
                 .values(
+                    product_id = linha['product_id'],
                     product_name=linha['product_name'],
                     reviews=float(linha['reviews']),
                     reviews_qtd=int(linha['reviews_qtd']),
@@ -360,6 +361,7 @@ def inserir_dados_csv(dtframe, engine):
                     product_image=linha['product_image'],
                 )
                 .on_duplicate_key_update(
+                    product_id = linha['product_id'],
                     product_name=linha['product_name'],
                     reviews=float(linha['reviews']),
                     reviews_qtd=int(linha['reviews_qtd']),

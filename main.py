@@ -21,6 +21,10 @@ if __name__ == '__main__':
     verificar_database()
     engines = create_engine_sqlmodel()
 
+    # url = [
+    #    'https://lista.mercadolivre.com.br/samsung-galaxy-s23-ultra-(esim)-5g-256-gb-verde-12-gb#D[A:samsung%20galaxy%20s23%20ultra%20(esim)%205g%20256%20gb%20verde%2012%20gb]'
+    # ]
+
     url = [
         'https://lista.mercadolivre.com.br/controle-sem-fio#D[A:controle%20sem%20fio]',
         'https://lista.mercadolivre.com.br/bíblia-da-mulher-de-fé%2C-nvi%2C-couro-soft%2C-lírios-do-campo%2C-de-walsh%2C-sheila.-editorial-vida-melhor-editora-s.a-em-portugu#D[A:Bíblia%20da%20Mulher%20de%20Fé,%20NVI,%20Couro%20Soft,%20Lírios%20do%20Campo,%20de%20Walsh,%20Sheila.%20Editorial%20Vida%20Melhor%20Editora%20S.A%20em%20portugu]',
@@ -37,7 +41,7 @@ if __name__ == '__main__':
         ,'https://lista.mercadolivre.com.br/tenis_Noindex_True'
     ]
 
-    reprocess: bool = False
+    reprocess: bool = True
     if reprocess == False:
         for i in url:
             with open('data/produtos.jsonl', 'a', encoding='utf-8') as file:
@@ -57,6 +61,6 @@ if __name__ == '__main__':
                 'data/produtos.jsonl', f'archive/produtos_{data_hora}.jsonl'
             )
         except:
-            print('Arquivo de dados json não encontrado'),
+            pass #print('Arquivo de dados json não encontrado'),
     except KeyError as e:
         print(e)

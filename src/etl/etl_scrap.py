@@ -1,6 +1,6 @@
 import pandas as pd
 import os
-
+import re
 
 def format_scrapy_amazon():
     try:
@@ -84,6 +84,10 @@ def format_scrapy_mercado_livre(reprocess: bool) -> bool:
     ).astype('float')
 
     df['marketplace'] = 'mercado livre'
+    
+    df['product_id'] = df['product_url'].str.replace('-','').apply(lambda url: re.search(r"MLB(\d+)", url).group(1) if re.search(r"MLB(\d+)", url) else '').astype('string')
+    
+    df = df[(df['product_id'] != '')]
 
     df = df.drop(
         columns=[
