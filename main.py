@@ -41,7 +41,7 @@ if __name__ == '__main__':
         ,'https://lista.mercadolivre.com.br/tenis_Noindex_True'
     ]
 
-    reprocess: bool = True
+    reprocess: bool = False
     if reprocess == False:
         for i in url:
             with open('data/produtos.jsonl', 'a', encoding='utf-8') as file:
